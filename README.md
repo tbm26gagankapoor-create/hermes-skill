@@ -6,11 +6,27 @@ It wraps the [`vulcan` MCP server](https://www.npmjs.com/package/vulcan-mcp-serv
 
 ## Install
 
+**One-command setup** (recommended — installs the skill, prompts for credentials, registers the MCP server in `~/.claude.json`, and prints next steps):
+
 ```bash
-npx skills add <your-org>/hermes-skill
+curl -fsSL https://raw.githubusercontent.com/tbm26gagankapoor-create/hermes-skill/main/setup.sh | bash
 ```
 
-The CLI drops the skill into your host's skill directory and the agent auto-discovers it.
+Or, if you'd rather inspect the script first:
+
+```bash
+git clone https://github.com/tbm26gagankapoor-create/hermes-skill.git
+cd hermes-skill
+./setup.sh
+```
+
+**Manual install** (skill only — you wire up MCP yourself):
+
+```bash
+npx skills add tbm26gagankapoor-create/hermes-skill
+```
+
+Then add the `vulcan` MCP server to `~/.claude.json` as shown in [`skills/hermes/SKILL.md`](./skills/hermes/SKILL.md#prerequisites).
 
 ## Prerequisites
 
