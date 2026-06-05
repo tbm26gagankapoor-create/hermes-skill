@@ -59,13 +59,28 @@ echo "Generate a token in Vulcan → Settings → API Tokens."
 echo "Default API URL is https://vulcan.example.com/api/v1 — change it for your instance."
 echo
 
-read -r -p "VULCAN_TOKEN (vulcan_ak_...): " VULCAN_TOKEN
+# Read from /dev/tty (not stdin) so the prompts work under `curl … | bash`,
+# where stdin is the pipe from curl, not the user's terminal. Fall back to
+# stdin only when no controlling TTY is available (e.g. CI smoke tests).
+# `-r /dev/tty` reports true even with no controlling terminal, so we
+# actually try to open it.
+if (exec 3</dev/tty) 2>/dev/null; then
+  exec 3</dev/tty
+  PROMPT_FD=3
+else
+  PROMPT_FD=0
+  warn "No TTY detected — reading credentials from stdin (non-interactive mode)."
+fi
+
+printf "VULCAN_TOKEN (vulcan_ak_...): " >&2
+IFS= read -r VULCAN_TOKEN <&"$PROMPT_FD"
 if [[ -z "$VULCAN_TOKEN" ]]; then
   red "Empty token — aborting."
   exit 1
 fi
 
-read -r -p "VULCAN_API_URL [https://vulcan.example.com/api/v1]: " VULCAN_API_URL
+printf "VULCAN_API_URL [https://vulcan.example.com/api/v1]: " >&2
+IFS= read -r VULCAN_API_URL <&"$PROMPT_FD"
 VULCAN_API_URL="${VULCAN_API_URL:-https://vulcan.example.com/api/v1}"
 
 echo
